@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>URL Shortener</title>
+	</head>
+	<body>
+		<h1 style="text-align:center">Bienvenido al URL Shortener más rápido del mundo!</h1>
+		<form style="display:flex; justify-content:center; align-items:center; flex-direction:column" id="sub-form" accept-charset="utf-8">
+			<label for="urlform">Introduce tu URL</label>
+			<input style="margin:20px" type="text" name="URL" id="urlform"/>
+			<button type="submit">Confirmar</button>
+			<p id="text"></p>
+		</form>
+
+		<script >
+			const myform = document.querySelector("#sub-form");
+			const URL = document.querySelector("#urlform");
+			const text = document.querySelector("#text");
+			const create = async (reqBody) => {
+			  const res = await fetch("/create", {
+				method: "POST",
+				mode: "cors",
+				headers: {
+				  "Content-Type": "application/json",
+				},
+				body: JSON.stringify(reqBody),
+			  });
+			  const json = await res.json()
+			  setText(json)
+			  return (json);
+			};
+
+			const setText = (url)=>{
+			  text.innerHTML = `Tu url es <a href="${url.url}">${url.url}</a>`
+			}
+			myform.addEventListener("submit", (e) => {
+			  e.preventDefault();
+			  const reqBody = { url: URL.value };
+			  const url = create(reqBody);
+			});
+		</script>
+	</body>
+</html>
