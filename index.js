@@ -11,12 +11,18 @@ const connection = mysql.createConnection({
   user: "sergio",
 });
 
+const debug = (...args) => {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(...args);
+  }
+};
+
 connection.connect((err) => {
   if (err) {
-    console.log(err);
-    return;
+    debug("Error connecting to database");
+    throw err
   }
-  console.log("Connected to DB");
+  else console.log("Connected to DB");
 });
 
 const app = express();
@@ -26,7 +32,6 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-// app.use(express.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
   req.getUrl = function () {
     return req.protocol + "://" + req.get("host");
@@ -39,9 +44,8 @@ app.get("/", (_, res) => {
 });
 
 app.post("/create/", async (req, res) => {
-  // console.log(req.body);
   if (!req.body || !req.body.url) {
-    res.status(400).json('{"status":"error", "message": "URL needed"}');
+    res.status(400).json({ message: "No url provided" });
     return;
   }
   id = nanoid(6);
@@ -51,8 +55,11 @@ app.post("/create/", async (req, res) => {
       [req.body.url],
       (err, result) => {
         if (err) {
-          console.log(err);
-          res.send("ERR");
+          debug("Error querying database", e);
+          res.status(500).json({
+            status: "error",
+            message: "Internal server error",
+          });
           return;
         }
         if (result?.length !== 0) {
@@ -66,18 +73,23 @@ app.post("/create/", async (req, res) => {
       }
     );
   } catch (e) {
-    console.log("Error", e);
-    res.send("Error");
+    debug("Error querying database", e);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
     return;
   }
 });
 
 app.get("/s/:slug", (req, res) => {
   if (!req.params.slug) {
-    res.send("NO SLUG");
+    res.status(400).json({
+      status: "error",
+      message: "No slug provided",
+    });
     return;
   }
-  console.log(req.params.slug);
   try {
     connection.query(
       "select url from slugs where slug = ?",
@@ -85,17 +97,30 @@ app.get("/s/:slug", (req, res) => {
       (err, result, fields) => {
         if (err) {
           console.log(err);
-          res.send("Error");
+          res.status(500).json({
+            status: "error",
+            message: "Internal server error",
+          });
           return;
         }
         if (result.length === 0) {
-          res.send("Slug not found");
+          res.status(404).json({
+            status: "error",
+            message: "Slug not found",
+          });
           return;
-        } else res.status(301).redirect(result[0].url);
+        } else {
+          res.status(301).redirect(result[0].url);
+          return;
+        }
       }
     );
   } catch (e) {
-    console.log("ERROR", e);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
+    return;
   }
 });
 

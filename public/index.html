@@ -4,12 +4,80 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>URL Shortener</title>
+		<style>
+			html{
+				font-family: sans-serif;
+				-ms-text-size-adjust: 100%;
+				-webkit-text-size-adjust: 100%;
+				height: 100%;
+			}
+			body{
+				font-family: sans-serif;
+				font-size: 16px;
+				color: #333;
+				background-color: #eee;
+				height: 100%;
+				margin:0;
+			}
+
+			form{
+				margin: 0 auto;
+				width: 400px;
+				padding: 20px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				background-color: #f8f8f8;
+			}
+
+			h1{
+				text-align: center;
+				margin-top: 0;
+				padding-top:20px;
+			}
+
+			button{
+				transition: all 0.3s ease-in-out;
+				background-color: #00bcd4;
+				color: #fff;
+				border: none;
+				padding: 10px;
+				border-radius: 5px;
+				cursor: pointer;
+				font-size: 16px;
+				font-weight: bold;
+			}
+
+			p{
+				text-align: center;
+			}
+			#text{
+				width: 100%;
+				padding: 10px;
+				/* border: 1px solid #ccc; */
+				border-radius: 5px;
+				font-size: 16px;
+			}
+
+			button:hover{
+				cursor: pointer;
+				transform: scale(1.1);
+			}
+			input{
+				width: 100%;
+				padding: 10px;
+				margin:20px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				font-size: 16px;
+			}
+		</style>
 	</head>
 	<body>
-		<h1 style="text-align:center">Bienvenido al URL Shortener más rápido del mundo!</h1>
+		<h1>Bienvenido al URL Shortener más rápido del mundo!</h1>
 		<form style="display:flex; justify-content:center; align-items:center; flex-direction:column" id="sub-form" accept-charset="utf-8">
 			<label for="urlform">Introduce tu URL</label>
-			<input style="margin:20px" type="text" name="URL" id="urlform"/>
+			<input type="text" name="URL" id="urlform"/>
 			<button type="submit">Confirmar</button>
 			<p id="text"></p>
 		</form>
@@ -18,6 +86,10 @@
 			const myform = document.querySelector("#sub-form");
 			const URL = document.querySelector("#urlform");
 			const text = document.querySelector("#text");
+
+			const isURL = (url) => {
+				return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(url);
+			}
 			const create = async (reqBody) => {
 			  const res = await fetch("/create", {
 				method: "POST",
@@ -33,12 +105,18 @@
 			};
 
 			const setText = (url)=>{
-			  text.innerHTML = `Tu url es <a href="${url.url}">${url.url}</a>`
+				text.innerHTML = `Tu url es <a target="_blank" href="${url.url}">${url.url}</a>`
+				text.style.border = "1px solid #ccc"
 			}
 			myform.addEventListener("submit", (e) => {
 			  e.preventDefault();
 			  const reqBody = { url: URL.value };
-			  const url = create(reqBody);
+			  if (isURL(reqBody.url)) {
+				create(reqBody)
+			  } else {
+				text.innerHTML = "La URL introducida no es válida";
+				text.style.border = "1px solid #ccc"
+			  }
 			});
 		</script>
 	</body>
