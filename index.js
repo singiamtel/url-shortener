@@ -58,7 +58,7 @@ app.post("/create/", async (req, res) => {
       [req.body.url],
       (err, result) => {
         if (err) {
-          debug("Error querying database", e);
+          debug("Error querying database", err);
           res.status(500).json({
             status: "error",
             message: "Internal server error",
