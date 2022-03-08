@@ -8,8 +8,8 @@ This app was made only as a learning exercise
 
 - [x] Create Express API
 - [x] Create frontend
-- [] Choose between SQL and SQLite
-- [] Deployment script
+- [x] Choose between SQL and SQLite
+- [x] Deployment script
 - [] Create docker container
 - [] Deploy to Vercel
 - [] Setup tests via GitHub actions
