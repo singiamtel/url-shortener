@@ -7,7 +7,6 @@ DBUSER="${1:-urlshort}"
 PASSWORD="${2:-$(($RANDOM*$RANDOM))}"
 
 mysql < setupDB.sql
-
 mysql --execute="CREATE USER '${DBUSER}'@'localhost' identified by '$PASS'"
 mysql --execute="GRANT ALL PRIVILEGES on urlshort.* to '${DBUSER}'@'localhost'"
 
