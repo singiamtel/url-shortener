@@ -9,6 +9,12 @@ const issql = process.env.DB_ENGINE === "mysql"
 let db
 let connection
 
+const debug = (...args) => {
+	if (process.env.NODE_ENV !== "production") {
+		console.log(...args);
+	}
+};
+
 if(issql){
 	db = require("mysql")
 	const conSettings = {
@@ -52,14 +58,6 @@ else{
 	})
 	connection.query = connection.all
 }
-
-
-const debug = (...args) => {
-	if (process.env.NODE_ENV !== "production") {
-		console.log(...args);
-	}
-};
-
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -146,7 +144,8 @@ app.get("/s/:slug", (req, res) => {
 					});
 					return;
 				} else {
-					res.status(301).redirect(result[0].url);
+					const URL = /^http/.test(result[0].url) ? result[0].url : "http://" + result[0].url
+					res.status(301).redirect(URL);
 					return;
 				}
 			}

@@ -88,10 +88,9 @@
 			const myform = document.querySelector("#sub-form");
 			const URL = document.querySelector("#urlform");
 			const text = document.querySelector("#text");
-			const url_re = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
 
 			const isURL = (url) => {
-				return url_re.test(url);
+				return /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(url);
 			}
 			const create = async (reqBody) => {
 			  const res = await fetch("/create", {
