@@ -28,7 +28,7 @@ if(issql){
 }
 else{
 	const sqlite3 = require("sqlite3")
-	console.log("Warning: Running in-memory sqlite database")
+	debug("Warning: Running in-memory sqlite database")
 	connection = new sqlite3.Database(':memory:', (err) => {
 		if (err) {
 			return console.error(err.message)
@@ -37,6 +37,7 @@ else{
 	})
 	const sqlFile = fs.readFileSync('./setupSQLite.sql')
 	const data = sqlFile.toString().split(';')
+	// Remove last empty element
 	data.pop()
 	connection.serialize(() => {
 		connection.run('BEGIN TRANSACTION')
@@ -83,7 +84,7 @@ app.post("/create/", async (req, res) => {
 		res.status(400).json({ message: "No url provided" });
 		return;
 	}
-	id = nanoid(6);
+	const id = nanoid(6);
 	try {
 		connection.query(
 			"select * from slugs where url = ?",
@@ -131,7 +132,7 @@ app.get("/s/:slug", (req, res) => {
 			[req.params.slug],
 			(err, result, fields) => {
 				if (err) {
-					console.log(err);
+					debug(err);
 					res.status(500).json({
 						status: "error",
 						message: "Internal server error",
