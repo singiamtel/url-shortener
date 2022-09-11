@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>URL Shortener</title>
+		<link rel="icon" type="image/x-icon" href="/logo.ico">
 		<style>
 			html{
 				font-family: sans-serif;
@@ -74,21 +75,23 @@
 		</style>
 	</head>
 	<body>
-		<h1>Bienvenido al URL Shortener más rápido del mundo!</h1>
+		<h1>Welcome to the world's fastest URL Shortener!</h1>
 		<form style="display:flex; justify-content:center; align-items:center; flex-direction:column" id="sub-form" accept-charset="utf-8">
-			<label for="urlform">Introduce tu URL</label>
+			<label for="urlform">URL</label>
 			<input type="text" name="URL" id="urlform"/>
-			<button type="submit">Confirmar</button>
+			<button type="submit">Confirm</button>
 			<p id="text"></p>
+			<img src="logo.ico" alt="Logo" style="margin-bottom:20px; width:70px; height:auto"/>
 		</form>
 
 		<script >
 			const myform = document.querySelector("#sub-form");
 			const URL = document.querySelector("#urlform");
 			const text = document.querySelector("#text");
+			const url_re = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
 
 			const isURL = (url) => {
-				return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi.test(url);
+				return url_re.test(url);
 			}
 			const create = async (reqBody) => {
 			  const res = await fetch("/create", {
@@ -105,8 +108,8 @@
 			};
 
 			const setText = (url)=>{
-				text.innerHTML = `Tu url es <a target="_blank" href="${url.url}">${url.url}</a>`
-				text.style.border = "1px solid #ccc"
+				text.innerHTML = `Your url is <a target="_blank" href="${url.url}">${url.url}</a>`
+				text.style.border = "2px solid lightblue"
 			}
 			myform.addEventListener("submit", (e) => {
 			  e.preventDefault();
@@ -114,8 +117,8 @@
 			  if (isURL(reqBody.url)) {
 				create(reqBody)
 			  } else {
-				text.innerHTML = "La URL introducida no es válida";
-				text.style.border = "1px solid #ccc"
+				text.innerHTML = "Invalid url!";
+				text.style.border = "2px solid red"
 			  }
 			});
 		</script>
