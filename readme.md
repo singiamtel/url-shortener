@@ -10,7 +10,6 @@ This app was made only as a learning exercise
 - [x] Create frontend
 - [x] Choose between SQL and SQLite
 - [x] Deployment script
-- [ ] Create docker container
+- [ ] Migrate frontend to Angular
 - [ ] Deploy to Vercel
 - [ ] Setup tests via GitHub actions
-- [ ] Divide frontend and backend
